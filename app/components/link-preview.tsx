@@ -1,7 +1,6 @@
 "use client";
 
 import axios, { AxiosResponse } from "axios";
-import Image from "next/image";
 import { useState } from "react";
 
 interface PreviewData {
