@@ -16,13 +16,20 @@ export default function LinkPreview() {
 	const [error, setError] = useState<string>("");
 
 	const fetchData = async () => {
+		setPreviewData(null);
+
 		if (!url || url === "") {
 			setError("Url required");
 			return;
 		}
 
-		setPreviewData(null);
+		if (!url.startsWith("http")) {
+			setError("Not a valid url structure");
+			return;
+		}
+		
 		setLoading(true);
+
 		try {
 			const response = await axios.get(
 				`http://localhost:3000/api/link-preview?url=${url}`
@@ -38,7 +45,10 @@ export default function LinkPreview() {
 	};
 
 	return (
-		<div className="flex flex-col items-center gap-2">
+		<div className="flex flex-col items-center space-y-5">
+			<h1 className="text-2xl text-clip bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 font-sans font-bold">
+				LinkPreviewer: Preview Web Links with Ease.
+			</h1>
 			<div className="rounded-full p-1 border-black border-4 w-full md:w-[30rem] text-slate-500 flex items-center justify-between">
 				<input
 					type="text"
@@ -49,7 +59,7 @@ export default function LinkPreview() {
 				/>
 				<button
 					onClick={fetchData}
-					className="px-4 md:px-7 py-3 border-none bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full cursor-pointer"
+					className="px-4 md:px-7 py-3 border-none bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full cursor-pointer hover:from-purple-700 hover:to-blue-700"
 				>
 					Fetch
 				</button>
@@ -57,16 +67,22 @@ export default function LinkPreview() {
 			<div className="flex items-center justify-center p-4 border">
 				{!previewData && !loading && !error ? (
 					<h1 className="text-2xl text-clip bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600 font-sans font-bold">
-						Preview links
+						Take a quick look into links.
 					</h1>
 				) : null}
 				{previewData ? (
 					<div className="flex flex-col w-auto md:w-[30rem] rounded-sm space-y-2">
 						<div className="flex flex-col text-slate-500 space-y-3">
 							<h1 className="text-2xl font-sans font-bold text-neutral-800">
-								{previewData.title}
+								<a href={url} target="_blank">
+									{previewData.title}
+								</a>
 							</h1>
-							<p>{previewData.description}</p>
+							<p>
+								<a href={url} target="_blank">
+									{previewData.description}
+								</a>
+							</p>
 						</div>
 						<img
 							className="w-auto max-h-[20rem] rounded-md"
